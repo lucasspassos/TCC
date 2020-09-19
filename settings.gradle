@@ -1,0 +1,3 @@
+include ':obd-java-api'
+include ':app'
+rootProject.name = "Monitoramento"
