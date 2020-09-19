@@ -146,8 +146,6 @@ public class MainActivity extends AppCompatActivity {
                             new SelectProtocolCommand(ObdProtocols.AUTO).run(socket.getInputStream(), socket.getOutputStream());
                             new AmbientAirTemperatureCommand().run(socket.getInputStream(), socket.getOutputStream());
 
-
-
                         } catch (Exception e) {
 
                             Toast.makeText(getApplicationContext(), "Error on initialize Pire's thread", Toast.LENGTH_LONG).show();
@@ -167,6 +165,12 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("REC", "Device Connected");
 
                         btnConexao.setText("Desconectar");
+
+                        Intent intent = new Intent(getApplicationContext(), viagem.class);
+                        //intent.putExtra("RPM","1000 RPM");
+
+                        startActivity(intent);
+
 
                     }catch (IOException  erro){
                         conexao = false;
