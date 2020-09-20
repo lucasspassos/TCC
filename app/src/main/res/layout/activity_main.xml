@@ -4,196 +4,186 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:screenOrientation="portrait"
     android:orientation="vertical"
+    android:screenOrientation="portrait"
     tools:context=".MainActivity"
     tools:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnConexao"
-        style="@style/AppTheme"
-        android:layout_width="146dp"
-        android:layout_height="41dp"
-        android:layout_marginBottom="80dp"
-        android:background="@drawable/btn_iniciar_viagem"
-        android:gravity="center_vertical"
-        android:text="Iniciar viagem"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_resum_viagem"
+    <RelativeLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="150dp"
-        android:text="Resumo da última viagem"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_info_adicional"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="130dp"
-        android:text="Informações atuais"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_cons_medio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="50dp"
-        android:text="Consumo médio"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_nt_conducao"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginBottom="50dp"
-        android:text="Nota de condução"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_cons_medio"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_distancia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="50dp"
-        android:text="Distância"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/txt_nt_conducao"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btn_consumo_medio"
-        style="@style/AppTheme"
-        android:layout_width="95dp"
-        android:layout_height="38dp"
+        android:layout_gravity="center"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/btn_resumo_viagem"
-        android:textColor="#FFFFFF"
-        android:text="10 km/l"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_cons_medio" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btn_nt_conducao"
-        android:layout_width="95dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/btn_resumo_viagem"
-        android:textColor="#FFFFFF"
-        android:text="8,5"
-        app:layout_constraintStart_toEndOf="@+id/btn_consumo_medio"
-        app:layout_constraintTop_toBottomOf="@+id/txt_nt_conducao" />
 
-    <Button
-        android:id="@+id/btn_distancia"
-        android:layout_width="95dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/btn_resumo_viagem"
-        android:textColor="#FFFFFF"
-        android:text="35 km"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_nt_conducao"
-        app:layout_constraintTop_toBottomOf="@+id/txt_distancia" />
 
-    <TextView
-        android:id="@+id/txt_distancia_prox_abastecimento"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="250dp"
-        android:text="Distância até abastecer"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Button
+            android:id="@+id/btnConexao"
+            style="@style/AppTheme"
+            android:layout_width="146dp"
+            android:layout_height="41dp"
+            android:background="@drawable/btn_iniciar_viagem"
+            android:gravity="center_vertical"
+            android:text="Iniciar viagem"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:layout_marginStart="290dp"
+            android:layout_marginTop="300dp" />
 
-    <TextView
-        android:id="@+id/txt_avarias"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="180dp"
-        android:layout_marginBottom="250dp"
-        android:text="Avarias"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-    />
+        <Button
+            android:id="@+id/btn_nota"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_info_adicional"
+            android:text="10"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
 
-    <TextView
-        android:id="@+id/txt_prox_revisao"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="280dp"
-        android:layout_marginBottom="250dp"
-        android:text="Próxima revisão"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_nota"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="55dp"
+            android:layout_marginTop="110dp"
+            android:text="Nota da Condução"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btn_distancia_abastecimento"
-        android:layout_width="58dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/btn_info_adicional"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:text="35 km"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
+        <Button
+            android:id="@+id/btn_Consumo_inst"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="540dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_info_adicional"
+            android:text="14,3"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
 
-    <Button
-        android:id="@+id/btn_avarias"
-        android:layout_width="58dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="175dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/btn_info_adicional_avarias"
-        android:text="0"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_avarias" />
+        <TextView
+            android:id="@+id/txt_Consumo_inst"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="520dp"
+            android:layout_marginTop="110dp"
+            android:text="Consumo Instantâneo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btn_avarias2"
-        android:layout_width="58dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="300dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/btn_info_adicional"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:text="1520 km"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_prox_revisao" />
+        <Button
+            android:id="@+id/btn_Consumo_med"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="380dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_info_adicional"
+            android:text="16,5"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
+
+        <TextView
+            android:id="@+id/txt_cons_medio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="380dp"
+            android:layout_marginTop="110dp"
+            android:text="Consumo médio"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_temperatura"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="220dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_info_adicional"
+            android:text="91,2"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
+
+        <TextView
+            android:id="@+id/txt_cons_inst"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="230dp"
+            android:layout_marginTop="110dp"
+            android:text="Temperatura"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="685dp"
+            android:layout_height="204dp"
+            android:layout_marginTop="170dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_Rotacao"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="540dp"
+            android:layout_marginTop="220dp"
+            android:background="@drawable/btn_info_adicional"
+            android:text="2340 RPM"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
+
+
+        <Button
+            android:id="@+id/btn_Velocidade"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="220dp"
+            android:background="@drawable/btn_info_adicional"
+            android:text="120 km/h"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
+
+
+
+
+        <TextView
+            android:id="@+id/rpm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="200dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

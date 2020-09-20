@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Termos">
+
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TERMOS DE USO"
+                android:layout_gravity="center"
+                android:textSize="30dp"/>
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="1. SeuApp
+
+SeuApp é um serviço online (“plataforma”) para criar usando um configurador (kit de construção) e gerenciamento de aplicativos móveis, aplicativos da Web e sites (coletivamente, “aplicativos”). Além disso, o SeuApp oferece recursos adicionais para gerenciar usuários, campanhas de marketing e um sistema de bate-papo. SeuApp (seuapp.com ou outros endereços da web) é um serviço da “AppYourself GmbH”. O uso da plataforma está sujeito a uma cobrança. Como parte de uma fase de teste, salvo indicação em contrário, o teste da plataforma, em particular o configurador, é gratuito. A SeuApp oferece serviços adicionais que geralmente são cobrados. O SeuApp expandirá constantemente a gama de serviços, funções e módulos adicionais e os adaptará aos desenvolvimentos atuais. O escopo exato das ofertas é regido pelo § 7 destes Termos de Uso. Todas as ofertas e estes termos de uso são dirigidos a empresários na acepção do § 14 BGB."
+                android:textSize="15dp" />
+
+            <TextView
+
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:text="2. Âmbito e definição
+
+Estes Termos de Uso regem o uso da Plataforma e dos Serviços por usuários devidamente registrados (“Cliente” ou “Usuário”). Os usuários também podem ser revendedores que revendem aplicativos para terceiros usando a plataforma de revendedores (parte da plataforma em reseller.appyourself.net). Os revendedores também são “usuários” ou especificamente mencionados como “revendedores”. Estes Termos de Uso também regem o uso da plataforma como revendedor. Um “projeto” define coletivamente o uso de um aplicativo com todos os componentes e funções disponíveis para um cliente."/>
+
+
+
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

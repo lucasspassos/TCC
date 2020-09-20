@@ -18,14 +18,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 
 import com.github.pires.obd.commands.SpeedCommand;
+import com.github.pires.obd.commands.control.PendingTroubleCodesCommand;
 import com.github.pires.obd.commands.engine.RPMCommand;
+import com.github.pires.obd.commands.engine.ThrottlePositionCommand;
+import com.github.pires.obd.commands.fuel.ConsumptionRateCommand;
+import com.github.pires.obd.commands.fuel.FuelLevelCommand;
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
 import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
 import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
 import com.github.pires.obd.commands.protocol.TimeoutCommand;
 import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand;
+import com.github.pires.obd.commands.temperature.EngineCoolantTemperatureCommand;
 import com.github.pires.obd.enums.ObdProtocols;
 
 import java.io.IOException;
@@ -34,7 +46,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
     private static int REQUEST_ENABLE_BT = 1;
@@ -49,12 +61,26 @@ public class MainActivity extends AppCompatActivity {
     UUID uuid =  UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     Handler mHandler;
     StringBuilder dadosBluetooth = new StringBuilder();
+    private MapView mapView;
+    private GoogleMap gmap;
+    private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
+
+
+
+        Bundle mapViewBundle = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
+        }
+
+        mapView = findViewById(R.id.mapView);
+        mapView.onCreate(mapViewBundle);
+        mapView.getMapAsync(this);
 
         btnConexao = (Button)findViewById(R.id.btnConexao);
 
@@ -116,6 +142,58 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Bundle mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY);
+        if (mapViewBundle == null) {
+            mapViewBundle = new Bundle();
+            outState.putBundle(MAP_VIEW_BUNDLE_KEY, mapViewBundle);
+        }
+
+        mapView.onSaveInstanceState(mapViewBundle);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+    @Override
+    protected void onPause() {
+        mapView.onPause();
+        super.onPause();
+    }
+    @Override
+    protected void onDestroy() {
+        mapView.onDestroy();
+        super.onDestroy();
+    }
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        gmap = googleMap;
+        gmap.setMinZoomPreference(12);
+        LatLng ny = new LatLng(-23.5553035, -46.6972816);
+        gmap.moveCamera(CameraUpdateFactory.newLatLng(ny));
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -164,12 +242,13 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Voce Foi Conectado!", Toast.LENGTH_LONG).show();
                         Log.e("REC", "Device Connected");
 
+                        btnConexao.setVisibility(View.GONE);
                         btnConexao.setText("Desconectar");
 
-                        Intent intent = new Intent(getApplicationContext(), viagem.class);
+                        //Intent intent = new Intent(getApplicationContext(), viagem.class);
                         //intent.putExtra("RPM","1000 RPM");
 
-                        startActivity(intent);
+                        //startActivity(intent);
 
 
                     }catch (IOException  erro){
@@ -219,8 +298,21 @@ public class MainActivity extends AppCompatActivity {
             byte[] buffer = new byte[1];
             int bytes;
 
+            //Engine Rotation
             RPMCommand engineRpmCommand = new RPMCommand();
+            //Vehicle Speed
             SpeedCommand speedCommand = new SpeedCommand();
+            //Error codes pending
+            /*PendingTroubleCodesCommand pendingCodes = new PendingTroubleCodesCommand();
+            //Throttle Position
+            ThrottlePositionCommand  throttlePosition = new ThrottlePositionCommand();
+            //Consumpion Rate
+            ConsumptionRateCommand consumptionRate = new ConsumptionRateCommand();
+            //Fuel Level
+            FuelLevelCommand fuelLevel  = new FuelLevelCommand();
+            //Coolant Temperature
+            EngineCoolantTemperatureCommand coolantTemperature = new EngineCoolantTemperatureCommand();
+            */
 
             while (!Thread.currentThread().isInterrupted())
             {
@@ -237,6 +329,11 @@ public class MainActivity extends AppCompatActivity {
                 // TODO handle commands result
                 Log.e("TAG", "RPM: " + engineRpmCommand.getFormattedResult());
                 Log.e("TAG", "Speed: " + speedCommand.getFormattedResult());
+                //Log.e("TAG", "pendingCodes: " + pendingCodes.getFormattedResult());
+                /*Log.e("TAG", "throttlePosition: " + throttlePosition.getFormattedResult());
+                Log.e("TAG", "consumptionRate: " + consumptionRate.getFormattedResult());
+                Log.e("TAG", "fuelLevel: " + fuelLevel.getFormattedResult());
+                Log.e("TAG", "coolantTemperature: " + coolantTemperature.getFormattedResult());*/
 
                 //show(engineRpmCommand.getFormattedResult());
             }
