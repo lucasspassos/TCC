@@ -269,8 +269,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         private InputStream mmInStream;
         private OutputStream mmOutStream;
         private String ver;
-        //TextView rpmAmostragem;
-        //TextView velMax;
+        Button rpm;
+        Button velocidade;
 
         public ConnectThread(BluetoothSocket socket1) {
             // Use a temporary object that is later assigned to mmSocket
@@ -335,7 +335,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e("TAG", "fuelLevel: " + fuelLevel.getFormattedResult());
                 Log.e("TAG", "coolantTemperature: " + coolantTemperature.getFormattedResult());*/
 
-                //show(engineRpmCommand.getFormattedResult());
+                showRpm(engineRpmCommand.getFormattedResult());
+                showVel(speedCommand.getFormattedResult());
             }
 
             while (true) {
@@ -356,14 +357,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-        public void show(final String txt) {
-            //rpmAmostragem = (TextView)findViewById(R.id.rpm_obd);
-            //rpmAmostragem.post(new Runnable() {
-            //@Override
-            //public void run() {
-                //rpmAmostragem.setText(txt);
-            //}
-            //});
+        public void showVel(final String velAmostragem) {
+            velocidade = (Button)findViewById(R.id.btn_Velocidade);
+            velocidade.post(new Runnable(){
+                @Override
+                public void run() {
+                    velocidade.setText(velAmostragem);
+                }
+            });
+        }
+
+        public void showRpm(final String rpmAmostragem) {
+            rpm = (Button)findViewById(R.id.btn_Rotacao);
+            rpm.post(new Runnable(){
+                @Override
+                public void run() {
+                    rpm.setText(rpmAmostragem);
+                }
+            });
         }
 
     }
