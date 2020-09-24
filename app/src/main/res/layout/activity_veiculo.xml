@@ -4,15 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Cadastro">
-
+    tools:context=".Veiculo">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,104 +19,83 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Vamos criar uma conta, digite seus dados!"
+            android:text="Agora só as informações do seu Veículo!"
             android:textSize="20dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginBottom="20dp"/>
 
         <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:id="@+id/img_car"
+            android:layout_width="287dp"
+            android:layout_height="218dp"
             android:layout_gravity="center"
-            android:src="@drawable/cadastro" />
+            android:src="@drawable/car" />
 
-
+        <TextView
+            android:id="@+id/lbl_select_car"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Escolha a foto preferida do seu carro!"
+            android:layout_marginBottom="50dp"
+            android:textSize="12dp" />
 
         <TextView
             android:id="@+id/lbl_nome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nome"
+            android:text="Marca"
             android:textSize="20dp" />
 
         <EditText
-            android:id="@+id/txt_nome"
+            android:id="@+id/txt_marca"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:ems="10" />
 
         <TextView
-            android:id="@+id/lbl_email"
+            android:id="@+id/lbl_modelo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email"
+            android:text="Modelo"
             android:textSize="20dp" />
 
         <EditText
-            android:id="@+id/txt_email"
+            android:id="@+id/txt_modelo"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:ems="10" />
 
         <TextView
-            android:id="@+id/lbl_senha"
+            android:id="@+id/lbl_ano"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Senha"
+            android:text="Ano de Fabricação"
+            android:layout_marginBottom="10dp"
             android:textSize="20dp" />
 
-        <EditText
-            android:id="@+id/txt_senha"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:ems="10" />
+        <NumberPicker
+            android:id="@+id/txt_ano"
+            android:layout_width="289dp"
+            android:layout_height="60dp"
+            android:textSize="30dp"
+            android:selectionDividerHeight="0dp"/>
 
-        <TextView
-            android:id="@+id/lbl_confirmar_senha"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Confirmar Senha"
-            android:textSize="20dp" />
 
-        <EditText
-            android:id="@+id/txt_confirmar_senha"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:ems="10" />
-
-        <CheckBox android:id="@+id/checkbox_termos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12dp"
-            android:text="Li e concordo com os termos da"/>
-
-        <TextView
-            android:id="@+id/lbl_termos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:text="Licença"
-            android:textColor="#9AC1FF"
-            android:textSize="12dp"
-            android:layout_marginBottom="20dp"/>
 
         <Button
-            android:id="@+id/btn_cadastrar"
+            android:id="@+id/btn_finalizar"
             style="@style/AppTheme"
             android:background="@drawable/btn_iniciar_viagem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="Confirmar"
+            android:text="Finalizar"
             android:layout_marginBottom="20dp"
             android:textColor="@android:color/white" />
 
 
     </LinearLayout>
-
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

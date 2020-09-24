@@ -66,7 +66,7 @@ public class Cadastro extends AppCompatActivity {
                     {
                         if(termos){
                             try {
-                                Intent intent = new Intent(getApplicationContext(), Login.class);
+                                Intent intent = new Intent(getApplicationContext(), Veiculo.class);
                                 startActivity(intent);
 
                             }catch (Exception e){
