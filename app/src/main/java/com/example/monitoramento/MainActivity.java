@@ -9,7 +9,12 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.github.pires.obd.commands.temperature.AirIntakeTemperatureCommand;
+import com.github.pires.obd.commands.temperature.TemperatureCommand;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -40,12 +47,15 @@ import com.github.pires.obd.commands.protocol.TimeoutCommand;
 import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand;
 import com.github.pires.obd.commands.temperature.EngineCoolantTemperatureCommand;
 import com.github.pires.obd.enums.ObdProtocols;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
+
+import static com.example.monitoramento.R.drawable.btn_fundo_vermelho_alerta;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -189,10 +199,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        gmap = googleMap;
-        gmap.setMinZoomPreference(12);
-        LatLng ny = new LatLng(-23.5553035, -46.6972816);
-        gmap.moveCamera(CameraUpdateFactory.newLatLng(ny));
+        final GoogleMap mMap = googleMap;
+
+        try{
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            LocationListener locationListener = new LocationListener() {
+                public void onLocationChanged(Location location) {
+                    LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(latlng).title("Marker in local position"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
+                }
+
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
+
+                public void onProviderEnabled(String provider) {
+                }
+
+                public void onProviderDisabled(String provider) {
+                }
+            };
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
+            Log.e("REC", "locationListener " + locationListener);
+        }catch(SecurityException ex){
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -272,6 +305,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         private String ver;
         Button rpm;
         Button velocidade;
+        Button temperatura;
+        Button consumoInst;
 
         public ConnectThread(BluetoothSocket socket1) {
             // Use a temporary object that is later assigned to mmSocket
@@ -307,19 +342,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             /*PendingTroubleCodesCommand pendingCodes = new PendingTroubleCodesCommand();
             //Throttle Position
             ThrottlePositionCommand  throttlePosition = new ThrottlePositionCommand();
+            */
             //Consumpion Rate
             ConsumptionRateCommand consumptionRate = new ConsumptionRateCommand();
             //Fuel Level
-            FuelLevelCommand fuelLevel  = new FuelLevelCommand();
+            //FuelLevelCommand fuelLevel  = new FuelLevelCommand();
             //Coolant Temperature
             EngineCoolantTemperatureCommand coolantTemperature = new EngineCoolantTemperatureCommand();
-            */
+
 
             while (!Thread.currentThread().isInterrupted())
             {
                 try {
                     engineRpmCommand.run(mmInStream, mmOutStream);
                     speedCommand.run(mmInStream, mmOutStream);
+                    //consumptionRate.run(mmInStream, mmOutStream);
+                    coolantTemperature.run(mmInStream, mmOutStream);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -331,13 +369,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e("TAG", "RPM: " + engineRpmCommand.getFormattedResult());
                 Log.e("TAG", "Speed: " + speedCommand.getFormattedResult());
                 //Log.e("TAG", "pendingCodes: " + pendingCodes.getFormattedResult());
-                /*Log.e("TAG", "throttlePosition: " + throttlePosition.getFormattedResult());
-                Log.e("TAG", "consumptionRate: " + consumptionRate.getFormattedResult());
-                Log.e("TAG", "fuelLevel: " + fuelLevel.getFormattedResult());
-                Log.e("TAG", "coolantTemperature: " + coolantTemperature.getFormattedResult());*/
+                /*Log.e("TAG", "throttlePosition: " + throttlePosition.getFormattedResult());*/
+                //Log.e("TAG", "consumptionRate: " + consumptionRate.getResult());
+                //Log.e("TAG", "fuelLevel: " + fuelLevel.getFormattedResult());
 
-                showRpm(engineRpmCommand.getFormattedResult());
+                showRpm(engineRpmCommand.getFormattedResult(), engineRpmCommand.getRPM());
+
                 showVel(speedCommand.getFormattedResult());
+
+                showTemp(coolantTemperature.getFormattedResult());
+
+                showConsum(consumptionRate.getFormattedResult());
             }
 
             while (true) {
@@ -368,17 +410,40 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
         }
 
-        public void showRpm(final String rpmAmostragem) {
+        public void showRpm(final String rpmAmostragem, final int rpmPuro) {
             rpm = (Button)findViewById(R.id.btn_Rotacao);
             rpm.post(new Runnable(){
                 @Override
                 public void run() {
                     rpm.setText(rpmAmostragem);
+                    if (rpmPuro >= 3000) {
+                        rpm.setBackgroundResource(btn_fundo_vermelho_alerta);
+                    }else {
+                        rpm.setBackgroundResource(R.drawable.btn_info_adicional);
+                    }
                 }
             });
         }
 
-    }
+        public void showTemp(final String temp) {
+            temperatura = (Button)findViewById(R.id.btn_temperatura);
+            temperatura.post(new Runnable(){
+                @Override
+                public void run() {
+                    temperatura.setText(temp);
+                }
+            });
+        }
 
+        public void showConsum(final String cons) {
+            consumoInst = (Button)findViewById(R.id.btn_Consumo_inst);
+            consumoInst.post(new Runnable(){
+                @Override
+                public void run() {
+                    consumoInst.setText(cons);
+                }
+            });
+        }
+    }
 }
 
