@@ -11,15 +11,14 @@
 
     <RelativeLayout
         android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="711dp"
+        android:layout_height="387dp"
         android:layout_gravity="center"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
 
 
         <Button
@@ -27,14 +26,14 @@
             style="@style/AppTheme"
             android:layout_width="146dp"
             android:layout_height="41dp"
+            android:layout_marginStart="290dp"
+            android:layout_marginTop="300dp"
             android:background="@drawable/btn_iniciar_viagem"
             android:gravity="center_vertical"
             android:text="Iniciar viagem"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:layout_marginStart="290dp"
-            android:layout_marginTop="300dp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btn_nota"
@@ -67,7 +66,7 @@
             android:layout_marginStart="540dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/btn_info_adicional"
-            android:text="14,3"
+            android:text="0"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +114,7 @@
             android:layout_marginStart="220dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/btn_info_adicional"
-            android:text="91,2"
+            android:text="0"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +135,9 @@
             android:id="@+id/mapView"
             android:layout_width="685dp"
             android:layout_height="204dp"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="170dp"
+            android:layout_marginEnd="26dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -149,7 +150,7 @@
             android:layout_marginStart="540dp"
             android:layout_marginTop="220dp"
             android:background="@drawable/btn_info_adicional"
-            android:text="2340 RPM"
+            android:text="0 RPM"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
@@ -163,13 +164,11 @@
             android:layout_marginStart="60dp"
             android:layout_marginTop="220dp"
             android:background="@drawable/btn_info_adicional"
-            android:text="120 km/h"
+            android:text="0 km/h"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
-
-
 
 
         <TextView
