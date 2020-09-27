@@ -3,6 +3,7 @@ package com.example.monitoramento;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -11,6 +12,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -26,6 +28,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.example.monitoramento.data.model.ResumoModelo;
+import com.github.pires.obd.commands.control.DistanceMILOnCommand;
+import com.github.pires.obd.commands.control.DistanceSinceCCCommand;
 import com.github.pires.obd.commands.temperature.AirIntakeTemperatureCommand;
 import com.github.pires.obd.commands.temperature.TemperatureCommand;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -63,8 +68,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static int REQUEST_ENABLE_BT = 1;
     private static final int SOLICITA_CONEXAO = 2;
     private static final int MESSAGE_READ = 3;
-    private boolean conexao =false;
+    private boolean conexao = false;
     private static String MAC = null;
+    public double nivel_inicial;
+    public boolean nivel_inicial_coletado = false;
+    public boolean distancia_inicial_coletada = false;
+    public int distancia_inicial = 0;
+    public double notaConducao = 10.0;
+
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     BluetoothDevice device = null;
     BluetoothSocket socket = null;
@@ -102,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+
+
 
         btnConexao.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,26 +190,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onStart();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mapView.onStop();
-    }
-    @Override
-    protected void onPause() {
-        mapView.onPause();
-        super.onPause();
-    }
-    @Override
-    protected void onDestroy() {
-        mapView.onDestroy();
-        super.onDestroy();
-    }
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         final GoogleMap mMap = googleMap;
@@ -220,6 +214,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onProviderDisabled(String provider) {
                 }
             };
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                            PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+            } else {
+            Toast.makeText(this, "erro", Toast.LENGTH_LONG).show();
+            }
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
             Log.e("REC", "locationListener " + locationListener);
@@ -256,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             new LineFeedOffCommand().run(socket.getInputStream(), socket.getOutputStream());
                             new TimeoutCommand(125).run(socket.getInputStream(), socket.getOutputStream());
                             new SelectProtocolCommand(ObdProtocols.AUTO).run(socket.getInputStream(), socket.getOutputStream());
-                            new AmbientAirTemperatureCommand().run(socket.getInputStream(), socket.getOutputStream());
+                            //new AmbientAirTemperatureCommand().run(socket.getInputStream(), socket.getOutputStream());
 
                         } catch (Exception e) {
 
@@ -279,10 +283,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         btnConexao.setVisibility(View.GONE);
                         btnConexao.setText("Desconectar");
 
-                        //Intent intent = new Intent(getApplicationContext(), viagem.class);
-                        //intent.putExtra("RPM","1000 RPM");
-
-                        //startActivity(intent);
 
 
                     }catch (IOException  erro){
@@ -306,7 +306,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Button rpm;
         Button velocidade;
         Button temperatura;
-        Button consumoInst;
+        Button consumoMed;
+        Button distancia;
+        Button nota;
+        Button aceleracao;
+        public ResumoModelo resumo = new ResumoModelo();
 
         public ConnectThread(BluetoothSocket socket1) {
             // Use a temporary object that is later assigned to mmSocket
@@ -336,19 +340,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             //Engine Rotation
             RPMCommand engineRpmCommand = new RPMCommand();
+
             //Vehicle Speed
             SpeedCommand speedCommand = new SpeedCommand();
-            //Error codes pending
-            /*PendingTroubleCodesCommand pendingCodes = new PendingTroubleCodesCommand();
+
             //Throttle Position
             ThrottlePositionCommand  throttlePosition = new ThrottlePositionCommand();
-            */
-            //Consumpion Rate
-            ConsumptionRateCommand consumptionRate = new ConsumptionRateCommand();
+
             //Fuel Level
-            //FuelLevelCommand fuelLevel  = new FuelLevelCommand();
+            FuelLevelCommand fuelLevel  = new FuelLevelCommand();
+
             //Coolant Temperature
             EngineCoolantTemperatureCommand coolantTemperature = new EngineCoolantTemperatureCommand();
+
+            //Distance
+            DistanceMILOnCommand milOnCommand = new DistanceMILOnCommand();
+
+            //Distance since command
+            DistanceSinceCCCommand distanceSinceCCCommand = new DistanceSinceCCCommand();
 
 
             while (!Thread.currentThread().isInterrupted())
@@ -356,8 +365,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 try {
                     engineRpmCommand.run(mmInStream, mmOutStream);
                     speedCommand.run(mmInStream, mmOutStream);
-                    //consumptionRate.run(mmInStream, mmOutStream);
                     coolantTemperature.run(mmInStream, mmOutStream);
+                    throttlePosition.run(mmInStream, mmOutStream);
+                    fuelLevel  = new FuelLevelCommand();
+                    fuelLevel.run(mmInStream, mmOutStream);
+                    milOnCommand.run(mmInStream, mmOutStream);
+                    distanceSinceCCCommand.run(mmInStream, mmOutStream);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -368,10 +381,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // TODO handle commands result
                 Log.e("TAG", "RPM: " + engineRpmCommand.getFormattedResult());
                 Log.e("TAG", "Speed: " + speedCommand.getFormattedResult());
-                //Log.e("TAG", "pendingCodes: " + pendingCodes.getFormattedResult());
-                /*Log.e("TAG", "throttlePosition: " + throttlePosition.getFormattedResult());*/
-                //Log.e("TAG", "consumptionRate: " + consumptionRate.getResult());
-                //Log.e("TAG", "fuelLevel: " + fuelLevel.getFormattedResult());
+                Log.e("TAG", "Coolant: " + coolantTemperature.getFormattedResult());
+                Log.e("TAG", "throttlePosition: " + throttlePosition.getFormattedResult());
+                Log.e("TAG", "distanceSinceCCCommand: " + distanceSinceCCCommand.getFormattedResult());
+                Log.e("TAG", "fuelLevel: " + fuelLevel.getFormattedResult());
 
                 showRpm(engineRpmCommand.getFormattedResult(), engineRpmCommand.getRPM());
 
@@ -379,7 +392,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 showTemp(coolantTemperature.getFormattedResult());
 
-                showConsum(consumptionRate.getFormattedResult());
+                showConsum(fuelLevel.getFuelLevel());
+
+                showDist(distanceSinceCCCommand.getKm());
+
+                verifyThrottlePosition(throttlePosition.getPercentage());
             }
 
             while (true) {
@@ -399,18 +416,49 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
+        public void verifyThrottlePosition(final float porcentagemPedal){
 
+            try{
+                aceleracao = (Button)findViewById(R.id.btn_aceleracao);
+
+                aceleracao.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        aceleracao.setText(Double.toString(notaConducao));
+                        if(porcentagemPedal > 70.0){
+                            updateNota();
+                            aceleracao.setBackgroundResource(btn_fundo_vermelho_alerta);
+                        }
+                        else
+                            aceleracao.setBackgroundResource(R.drawable.btn_info_adicional);
+                    }
+                });
+
+            }catch (Exception e){
+                Toast.makeText(getApplicationContext(), "Erro ao verificar Aceleração" , Toast.LENGTH_LONG).show();
+            }
+
+
+
+        }
         public void showVel(final String velAmostragem) {
-            velocidade = (Button)findViewById(R.id.btn_Velocidade);
-            velocidade.post(new Runnable(){
-                @Override
-                public void run() {
-                    velocidade.setText(velAmostragem);
-                }
-            });
+
+            try{
+                velocidade = (Button)findViewById(R.id.btn_Velocidade);
+                velocidade.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        velocidade.setText(velAmostragem);
+                    }
+                });
+            }catch (Exception e){
+                Toast.makeText(getApplicationContext(), "Erro ao verificar Velocidade" , Toast.LENGTH_LONG).show();
+            }
+
         }
 
         public void showRpm(final String rpmAmostragem, final int rpmPuro) {
+
             rpm = (Button)findViewById(R.id.btn_Rotacao);
             rpm.post(new Runnable(){
                 @Override
@@ -418,31 +466,96 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     rpm.setText(rpmAmostragem);
                     if (rpmPuro >= 3000) {
                         rpm.setBackgroundResource(btn_fundo_vermelho_alerta);
+                        updateNota();
                     }else {
                         rpm.setBackgroundResource(R.drawable.btn_info_adicional);
                     }
+
                 }
             });
+
+        }
+
+
+        public void updateNota() {
+
+            try{
+                nota = (Button)findViewById(R.id.btn_nota);
+                notaConducao -= 0.5;
+                resumo.notaConducao = notaConducao;
+                nota.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        nota.setText(Double.toString(notaConducao));
+                        if(notaConducao <= 5)
+                            nota.setBackgroundResource(btn_fundo_vermelho_alerta);
+                        else
+                            nota.setBackgroundResource(R.drawable.btn_info_adicional);
+                    }
+                });
+            }catch (Exception e){
+                Toast.makeText(getApplicationContext(), "Erro ao atualizar nota da condução" , Toast.LENGTH_LONG).show();
+            }
+
         }
 
         public void showTemp(final String temp) {
-            temperatura = (Button)findViewById(R.id.btn_temperatura);
-            temperatura.post(new Runnable(){
-                @Override
-                public void run() {
-                    temperatura.setText(temp);
-                }
-            });
+            try {
+                temperatura = (Button)findViewById(R.id.btn_temperatura);
+                temperatura.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        temperatura.setText(temp);
+                    }
+                });
+            }catch (Exception e){
+                Toast.makeText(getApplicationContext(), "Erro ao verificar temperatura" , Toast.LENGTH_LONG).show();
+            }
+
         }
 
-        public void showConsum(final String cons) {
-            consumoInst = (Button)findViewById(R.id.btn_Consumo_inst);
-            consumoInst.post(new Runnable(){
-                @Override
-                public void run() {
-                    consumoInst.setText(cons);
+        public void showDist(final int dist) {
+
+            try{
+                if(!distancia_inicial_coletada)
+                {
+                    distancia_inicial = dist;
+                    distancia_inicial_coletada = true;
                 }
-            });
+                final int res = dist - distancia_inicial;
+                resumo.distancia = res;
+                distancia = (Button)findViewById(R.id.btn_distancia);
+                distancia.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        distancia.setText(Integer.toString(res));
+                    }
+                });
+            }catch (Exception e){
+                Toast.makeText(getApplicationContext(), "Erro ao verificar distancia" , Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+        public void showConsum(final Float nivel) {
+
+            try{
+                if(!nivel_inicial_coletado){
+                    nivel_inicial = nivel;
+                    nivel_inicial_coletado = true;
+                }
+                resumo.nivelTanque = nivel_inicial - nivel;
+                consumoMed = (Button)findViewById(R.id.btn_Consumo_med);
+                consumoMed.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        consumoMed.setText( String.format("%.1f", (nivel_inicial - nivel)) + '%' );
+                    }
+                });
+            }catch (Exception e){
+                Toast.makeText(getApplicationContext(), "Erro ao calcular consumo" , Toast.LENGTH_LONG).show();
+            }
+
         }
     }
 }

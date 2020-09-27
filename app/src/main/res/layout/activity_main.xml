@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:screenOrientation="portrait"
     tools:context=".MainActivity"
+    android:background="#1C1C1C"
     tools:orientation="vertical">
 
     <RelativeLayout
@@ -39,12 +40,13 @@
             android:id="@+id/btn_nota"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginStart="60dp"
+            android:layout_marginStart="40dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/btn_info_adicional"
             android:text="10"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
 
@@ -52,33 +54,10 @@
             android:id="@+id/txt_nota"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="55dp"
+            android:layout_marginStart="35dp"
             android:layout_marginTop="110dp"
             android:text="Nota da Condução"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/btn_Consumo_inst"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="540dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/btn_info_adicional"
-            android:text="0"
-            android:textAlignment="center"
             android:textColor="#FFFFFF"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
-
-        <TextView
-            android:id="@+id/txt_Consumo_inst"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="520dp"
-            android:layout_marginTop="110dp"
-            android:text="Consumo Instantâneo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -87,22 +66,50 @@
             android:id="@+id/btn_Consumo_med"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginStart="380dp"
+            android:layout_marginStart="560dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/btn_info_adicional"
-            android:text="16,5"
+            android:text="0"
+            android:textSize="20sp"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
 
         <TextView
-            android:id="@+id/txt_cons_medio"
+            android:id="@+id/txt_Consumo_med"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="380dp"
+            android:layout_marginStart="560dp"
             android:layout_marginTop="110dp"
             android:text="Consumo médio"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_distancia"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="420dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_info_adicional"
+            android:text="0 km"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
+
+        <TextView
+            android:id="@+id/txt_distancia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="410dp"
+            android:layout_marginTop="110dp"
+            android:text="Distância Percorrida"
+            android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -111,10 +118,11 @@
             android:id="@+id/btn_temperatura"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginStart="220dp"
+            android:layout_marginStart="180dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/btn_info_adicional"
             android:text="0"
+            android:textSize="20sp"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
@@ -124,9 +132,36 @@
             android:id="@+id/txt_cons_inst"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="230dp"
+            android:layout_marginStart="190dp"
             android:layout_marginTop="110dp"
             android:text="Temperatura"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_aceleracao"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="300dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_info_adicional"
+            android:text="0"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
+
+        <TextView
+            android:id="@+id/txt_Aceleracao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="315dp"
+            android:layout_marginTop="110dp"
+            android:text="Aceleração"
+            android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -151,6 +186,7 @@
             android:layout_marginTop="220dp"
             android:background="@drawable/btn_info_adicional"
             android:text="0 RPM"
+            android:textSize="20sp"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
@@ -165,6 +201,7 @@
             android:layout_marginTop="220dp"
             android:background="@drawable/btn_info_adicional"
             android:text="0 km/h"
+            android:textSize="20sp"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"

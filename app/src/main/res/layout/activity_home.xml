@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#404040"
+    android:background="#1C1C1C"
     tools:context=".Home">
 
     <ImageView
@@ -44,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="150dp"
         android:text="Resumo da última viagem"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +57,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="130dp"
         android:text="Informações atuais"
-        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,6 +71,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="50dp"
         android:text="Consumo médio"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -80,6 +83,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginBottom="50dp"
         android:text="Nota de condução"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/txt_cons_medio"
         app:layout_constraintTop_toTopOf="parent" />
@@ -92,6 +96,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="50dp"
         android:text="Distância"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -144,6 +149,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginBottom="250dp"
         android:text="Distância até abastecer"
+        android:textColor="#FFFFFF"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -153,9 +159,10 @@
         android:id="@+id/txt_avarias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="180dp"
+        android:layout_marginStart="190dp"
         android:layout_marginBottom="250dp"
         android:text="Avarias"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -166,6 +173,7 @@
         android:layout_marginStart="280dp"
         android:layout_marginBottom="250dp"
         android:text="Próxima revisão"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
