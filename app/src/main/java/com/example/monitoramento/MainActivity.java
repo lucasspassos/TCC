@@ -3,8 +3,10 @@ package com.example.monitoramento;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -31,6 +33,7 @@ import android.widget.Toolbar;
 import com.example.monitoramento.data.model.ResumoModelo;
 import com.github.pires.obd.commands.control.DistanceMILOnCommand;
 import com.github.pires.obd.commands.control.DistanceSinceCCCommand;
+import com.github.pires.obd.commands.control.TroubleCodesCommand;
 import com.github.pires.obd.commands.temperature.AirIntakeTemperatureCommand;
 import com.github.pires.obd.commands.temperature.TemperatureCommand;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -75,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean distancia_inicial_coletada = false;
     public int distancia_inicial = 0;
     public double notaConducao = 10.0;
+    public int dist_sem_punicao = 0;
 
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     BluetoothDevice device = null;
@@ -87,12 +91,40 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap gmap;
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
 
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    public boolean checkLocationPermission()
+    {
+        String permission = "android.permission.ACCESS_FINE_LOCATION";
+        int res = this.checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
 
         Bundle mapViewBundle = null;
@@ -103,6 +135,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(mapViewBundle);
         mapView.getMapAsync(this);
+
+        onStart();
 
         btnConexao = (Button)findViewById(R.id.btnConexao);
 
@@ -214,19 +248,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onProviderDisabled(String provider) {
                 }
             };
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-                    PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                            PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
-            } else {
-            Toast.makeText(this, "erro", Toast.LENGTH_LONG).show();
-            }
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
-            Log.e("REC", "locationListener " + locationListener);
+
         }catch(SecurityException ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
@@ -359,6 +383,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             //Distance since command
             DistanceSinceCCCommand distanceSinceCCCommand = new DistanceSinceCCCommand();
 
+            TroubleCodesCommand troubleCodesCommand = new TroubleCodesCommand();
+
 
             while (!Thread.currentThread().isInterrupted())
             {
@@ -371,6 +397,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     fuelLevel.run(mmInStream, mmOutStream);
                     milOnCommand.run(mmInStream, mmOutStream);
                     distanceSinceCCCommand.run(mmInStream, mmOutStream);
+                    troubleCodesCommand.run(mmInStream, mmOutStream);
+
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -385,8 +413,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e("TAG", "throttlePosition: " + throttlePosition.getFormattedResult());
                 Log.e("TAG", "distanceSinceCCCommand: " + distanceSinceCCCommand.getFormattedResult());
                 Log.e("TAG", "fuelLevel: " + fuelLevel.getFormattedResult());
+                Log.e("TAG", "Avarias: " + troubleCodesCommand.getFormattedResult());
 
-                showRpm(engineRpmCommand.getFormattedResult(), engineRpmCommand.getRPM());
+                showRpm(engineRpmCommand.getFormattedResult(), engineRpmCommand.getRPM(), distanceSinceCCCommand.getKm());
 
                 showVel(speedCommand.getFormattedResult());
 
@@ -396,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 showDist(distanceSinceCCCommand.getKm());
 
-                verifyThrottlePosition(throttlePosition.getPercentage());
+                verifyThrottlePosition(throttlePosition.getPercentage(), distanceSinceCCCommand.getKm() );
             }
 
             while (true) {
@@ -416,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-        public void verifyThrottlePosition(final float porcentagemPedal){
+        public void verifyThrottlePosition(final float porcentagemPedal, final int dist){
 
             try{
                 aceleracao = (Button)findViewById(R.id.btn_aceleracao);
@@ -424,9 +453,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 aceleracao.post(new Runnable(){
                     @Override
                     public void run() {
-                        aceleracao.setText(Double.toString(notaConducao));
+                        aceleracao.setText(String.format("%.1f", porcentagemPedal + '%'));
                         if(porcentagemPedal > 70.0){
-                            updateNota();
+                            decrementaNota(dist);
                             aceleracao.setBackgroundResource(btn_fundo_vermelho_alerta);
                         }
                         else
@@ -457,7 +486,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
 
-        public void showRpm(final String rpmAmostragem, final int rpmPuro) {
+        public void showRpm(final String rpmAmostragem, final int rpmPuro, final int dist) {
 
             rpm = (Button)findViewById(R.id.btn_Rotacao);
             rpm.post(new Runnable(){
@@ -466,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     rpm.setText(rpmAmostragem);
                     if (rpmPuro >= 3000) {
                         rpm.setBackgroundResource(btn_fundo_vermelho_alerta);
-                        updateNota();
+                        decrementaNota(dist);
                     }else {
                         rpm.setBackgroundResource(R.drawable.btn_info_adicional);
                     }
@@ -477,25 +506,59 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-        public void updateNota() {
+        public void decrementaNota(final int dist) {
+            if(notaConducao >=0){
+                try{
+                    nota = (Button)findViewById(R.id.btn_nota);
+                    notaConducao -= 0.5;
+                    resumo.notaConducao = notaConducao;
 
-            try{
-                nota = (Button)findViewById(R.id.btn_nota);
-                notaConducao -= 0.5;
-                resumo.notaConducao = notaConducao;
-                nota.post(new Runnable(){
-                    @Override
-                    public void run() {
-                        nota.setText(Double.toString(notaConducao));
-                        if(notaConducao <= 5)
-                            nota.setBackgroundResource(btn_fundo_vermelho_alerta);
-                        else
-                            nota.setBackgroundResource(R.drawable.btn_info_adicional);
-                    }
-                });
-            }catch (Exception e){
-                Toast.makeText(getApplicationContext(), "Erro ao atualizar nota da condução" , Toast.LENGTH_LONG).show();
+                    nota.post(new Runnable(){
+                        @Override
+                        public void run() {
+                            nota.setText(Double.toString(notaConducao));
+                            if(notaConducao <= 5)
+                                nota.setBackgroundResource(btn_fundo_vermelho_alerta);
+                            else
+                                nota.setBackgroundResource(R.drawable.btn_info_adicional);
+                        }
+                    });
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "Erro ao atualizar nota da condução" , Toast.LENGTH_LONG).show();
+                }
             }
+            else{
+                dist_sem_punicao = dist;
+            }
+
+
+        }
+
+        public void incrementaNota(int dist) {
+            if(notaConducao < 10){
+                try{
+                    nota = (Button)findViewById(R.id.btn_nota);
+
+                    notaConducao += 0.5;
+                    resumo.notaConducao = notaConducao;
+                    nota.post(new Runnable(){
+                        @Override
+                        public void run() {
+                            nota.setText(Double.toString(notaConducao));
+                            if(notaConducao <= 5)
+                                nota.setBackgroundResource(btn_fundo_vermelho_alerta);
+                            else
+                                nota.setBackgroundResource(R.drawable.btn_info_adicional);
+                        }
+                    });
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "Erro ao atualizar nota da condução" , Toast.LENGTH_LONG).show();
+                }
+            }
+            else {
+                dist_sem_punicao = dist;
+            }
+
 
         }
 
@@ -519,10 +582,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             try{
                 if(!distancia_inicial_coletada)
                 {
+                    dist_sem_punicao = dist;
                     distancia_inicial = dist;
                     distancia_inicial_coletada = true;
                 }
                 final int res = dist - distancia_inicial;
+
+                if((dist - dist_sem_punicao) >= 2 ){
+                    incrementaNota(dist);
+                }
                 resumo.distancia = res;
                 distancia = (Button)findViewById(R.id.btn_distancia);
                 distancia.post(new Runnable(){
