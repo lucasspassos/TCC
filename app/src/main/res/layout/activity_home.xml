@@ -8,14 +8,14 @@
     tools:context=".Home">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imgVeiculo"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_marginStart="51dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="51dp"
-        android:layout_marginBottom="134dp"
+        android:layout_marginBottom="180dp"
         android:src="@drawable/car"
         app:layout_constraintBottom_toTopOf="@+id/txt_distancia_prox_abastecimento"
         app:layout_constraintEnd_toEndOf="parent"
@@ -151,7 +151,7 @@
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imgVeiculo" />
 
     <TextView
         android:id="@+id/txt_avarias"
