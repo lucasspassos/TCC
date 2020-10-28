@@ -12,4 +12,5 @@
     <string name="lembrar">Lembrar</string>
     <string name="criar_uma_conta">Criar uma conta</string>
     <string name="login">Login</string>
+    <string name="CodUsuario">0</string>
 </resources>

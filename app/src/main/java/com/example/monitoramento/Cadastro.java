@@ -2,7 +2,9 @@ package com.example.monitoramento;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +12,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.monitoramento.data.model.UsuarioModelo;
+import com.example.monitoramento.response.UsuarioResponse;
+import com.example.monitoramento.services.ApiClient;
+import com.example.monitoramento.services.CadastroService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Cadastro extends AppCompatActivity {
 
@@ -66,8 +77,12 @@ public class Cadastro extends AppCompatActivity {
                     {
                         if(termos){
                             try {
-                                Intent intent = new Intent(getApplicationContext(), Veiculo.class);
-                                startActivity(intent);
+                                UsuarioModelo usuarioModelo = new UsuarioModelo();
+                                usuarioModelo.setNome(nome);
+                                usuarioModelo.setEmail(usuario);
+                                usuarioModelo.setSenha(senha);
+                                salvarUsuario(usuarioModelo);
+
 
                             }catch (Exception e){
 
@@ -87,6 +102,40 @@ public class Cadastro extends AppCompatActivity {
             }
         });
 
+
+
+    }
+
+    public void salvarUsuario(UsuarioModelo usuarioModelo){
+
+        Call<UsuarioResponse> usuarioResponseCall = ApiClient.getUsuarioService().salvarUsuario(usuarioModelo);
+        usuarioResponseCall.enqueue(new Callback<UsuarioResponse>() {
+            @Override
+            public void onResponse(Call<UsuarioResponse> call, Response<UsuarioResponse> response) {
+                if(response.code() == 200)
+                if(response.isSuccessful()){
+                    salvarDadosLocal(response.body());
+                    Intent intent = new Intent(getApplicationContext(), Veiculo.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(Cadastro.this,"Não foi cadastrado o usuario", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioResponse> call, Throwable t) {
+                Toast.makeText(Cadastro.this,"Não foi cadastrado o usuario", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void salvarDadosLocal(UsuarioResponse usuarioResponse){
+
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.CodUsuario), Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(getString(R.string.CodUsuario), usuarioResponse.getCodigo());
+        editor.apply();
 
 
     }

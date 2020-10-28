@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,10 +21,17 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.monitoramento.data.model.UsuarioModelo;
+import com.example.monitoramento.data.model.VeiculoModelo;
+import com.example.monitoramento.response.UsuarioResponse;
+import com.example.monitoramento.response.VeiculoResponse;
+import com.example.monitoramento.services.ApiClient;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,9 +39,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Veiculo extends AppCompatActivity {
 
-    private TextView txtRpm;
+    private TextView marca;
+    private TextView ano;
+    private TextView modelo;
     private NumberPicker np;
     private Button btnFinalizar;
     private ImageView img_car;
@@ -66,10 +80,14 @@ public class Veiculo extends AppCompatActivity {
         np.setMinValue(1950);
         np.setValue(2020);
         changeDividerColor(np, Color.parseColor("#00ffffff"));
+        marca = (EditText) findViewById(R.id.txt_marca);
+        modelo = (EditText) findViewById(R.id.txt_modelo);
+
 
         ImageView.class.cast(findViewById(R.id.img_car)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, IMAGEM_INTERNA);
@@ -80,8 +98,20 @@ public class Veiculo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    Intent intent = new Intent(getApplicationContext(), Login.class);
-                    startActivity(intent);
+                    String marcaText = marca.getText().toString();
+                    String modeloText = modelo.getText().toString();
+                    int ano = np.getValue();
+
+                    VeiculoModelo veiculoModelo = new VeiculoModelo();
+                    veiculoModelo.setCod_usuario(Integer.parseInt(codigoUsuario()));
+                    veiculoModelo.setMarca(marcaText);
+                    veiculoModelo.setModelo(modeloText);
+                    veiculoModelo.setAnoFabricacao(Integer.toString(ano));
+
+                    salvarVeiculo(veiculoModelo);
+
+
+
                 }catch (Exception e){
 
                     Toast.makeText(Veiculo.this, "Ocorreu um erro ao cadastrar o veículo", Toast.LENGTH_LONG).show();
@@ -217,5 +247,36 @@ public class Veiculo extends AppCompatActivity {
                 break;
             }
         }
+    }
+
+    private String codigoUsuario(){
+
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.CodUsuario), Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(getString(R.string.CodUsuario), Context.MODE_PRIVATE);
+        String result = sharedPreferences.getString(getString(R.string.CodUsuario), "");
+        return result;
+    }
+
+    public void salvarVeiculo(VeiculoModelo veiculoModelo){
+
+        Call<VeiculoResponse> veiculoResponseCall = ApiClient.getVeiculoService().salvarVeiculo(veiculoModelo);
+        veiculoResponseCall.enqueue(new Callback<VeiculoResponse>() {
+            @Override
+            public void onResponse(Call<VeiculoResponse> call, Response<VeiculoResponse> response) {
+                if(response.code() == 200)
+                    if(response.isSuccessful()){
+                        Toast.makeText(Veiculo.this,"Cadastro Concluído", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getApplicationContext(), Login.class);
+                        startActivity(intent);
+                    }else{
+                        Toast.makeText(Veiculo.this,"Não foi cadastrado o veiculo", Toast.LENGTH_LONG).show();
+                    }
+            }
+
+            @Override
+            public void onFailure(Call<VeiculoResponse> call, Throwable t) {
+                Toast.makeText(Veiculo.this,"Não foi cadastrado o veiculo", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

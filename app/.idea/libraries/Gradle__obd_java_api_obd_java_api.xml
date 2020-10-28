@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: obd-java-api.obd-java-api">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../obd-java-api/obd-java-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e("TAG", "RPM: " + engineRpmCommand.getFormattedResult());
                 Log.e("TAG", "Speed: " + speedCommand.getFormattedResult());
                 Log.e("TAG", "Coolant: " + coolantTemperature.getFormattedResult());
-                Log.e("TAG", "throttlePosition: " + throttlePosition.getFormattedResult());
+                Log.e("TAG", "throttlePosition: " + throttlePosition.getPercentage());
                 Log.e("TAG", "distanceSinceCCCommand: " + distanceSinceCCCommand.getFormattedResult());
                 Log.e("TAG", "fuelLevel: " + fuelLevel.getFormattedResult());
                 Log.e("TAG", "Avarias: " + troubleCodesCommand.getFormattedResult());
@@ -453,7 +453,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 aceleracao.post(new Runnable(){
                     @Override
                     public void run() {
-                        aceleracao.setText(String.format("%.1f", porcentagemPedal + '%'));
+
+                        aceleracao.setText(String.format("%.1f", porcentagemPedal) + "%");
                         if(porcentagemPedal > 70.0){
                             decrementaNota(dist);
                             aceleracao.setBackgroundResource(btn_fundo_vermelho_alerta);
