@@ -2,6 +2,7 @@ package com.example.monitoramento;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,6 +20,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -148,8 +150,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
-
-
         btnConexao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,15 +225,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         final GoogleMap mMap = googleMap;
 
         try{
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+            LatLng latlng = new LatLng(latitude, longitude);
+            mMap.addMarker(new MarkerOptions().position(latlng).title("Sua posição atual"));
+            float zoomLevel = 16.0f;
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, zoomLevel));
 
             LocationListener locationListener = new LocationListener() {
                 public void onLocationChanged(Location location) {
+
                     LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(latlng).title("Marker in local position"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
@@ -249,13 +259,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             };
 
-
-
         }catch(SecurityException ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
