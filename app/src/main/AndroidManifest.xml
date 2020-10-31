@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
-            android:value="YOUR_MAP_API" />
+            android:value="AIzaSyBt9LjPvSeo_rUDV4M4WVsfSHS9IgesuOA" />
 
 
         <activity android:name=".Home" android:screenOrientation="portrait"></activity>
