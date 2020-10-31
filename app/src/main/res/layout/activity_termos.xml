@@ -10,7 +10,11 @@
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -25,12 +29,12 @@
 
             <TextView
 
-                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TERMOS DE USO"
                 android:layout_gravity="center"
-                android:textSize="30dp"/>
+                android:layout_marginTop="20dp"
+                android:text="TERMOS DE USO"
+                android:textSize="30dp" />
 
             <TextView
 
@@ -44,17 +48,13 @@ SeuApp é um serviço online (“plataforma”) para criar usando um configurado
 
             <TextView
 
-                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
+                android:layout_marginTop="20dp"
                 android:text="2. Âmbito e definição
 
-Estes Termos de Uso regem o uso da Plataforma e dos Serviços por usuários devidamente registrados (“Cliente” ou “Usuário”). Os usuários também podem ser revendedores que revendem aplicativos para terceiros usando a plataforma de revendedores (parte da plataforma em reseller.appyourself.net). Os revendedores também são “usuários” ou especificamente mencionados como “revendedores”. Estes Termos de Uso também regem o uso da plataforma como revendedor. Um “projeto” define coletivamente o uso de um aplicativo com todos os componentes e funções disponíveis para um cliente."/>
-
-
-
-
+Estes Termos de Uso regem o uso da Plataforma e dos Serviços por usuários devidamente registrados (“Cliente” ou “Usuário”). Os usuários também podem ser revendedores que revendem aplicativos para terceiros usando a plataforma de revendedores (parte da plataforma em reseller.appyourself.net). Os revendedores também são “usuários” ou especificamente mencionados como “revendedores”. Estes Termos de Uso também regem o uso da plataforma como revendedor. Um “projeto” define coletivamente o uso de um aplicativo com todos os componentes e funções disponíveis para um cliente."
+                android:textSize="15dp" />
 
 
         </LinearLayout>
