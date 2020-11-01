@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.example.monitoramento.data.model.UsuarioModelo;
 import com.example.monitoramento.response.UsuarioResponse;
 import com.example.monitoramento.services.ApiClient;
-import com.example.monitoramento.services.CadastroService;
 
 import retrofit2.Call;
 import retrofit2.Callback;

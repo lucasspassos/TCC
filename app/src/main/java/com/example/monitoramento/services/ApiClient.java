@@ -35,4 +35,5 @@ public class ApiClient {
         VeiculoService veiculoService = getRetrofit().create(VeiculoService.class);
         return veiculoService;
     }
+
 }
