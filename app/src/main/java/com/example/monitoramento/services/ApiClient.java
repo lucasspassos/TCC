@@ -36,4 +36,9 @@ public class ApiClient {
         return veiculoService;
     }
 
+    public static ResumoService getResumoService(){
+        ResumoService resumoService = getRetrofit().create(ResumoService.class);
+        return resumoService;
+    }
+
 }

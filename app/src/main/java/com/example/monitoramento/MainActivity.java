@@ -15,6 +15,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -33,6 +34,9 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.monitoramento.data.model.ResumoModelo;
+import com.example.monitoramento.data.model.UsuarioModelo;
+import com.example.monitoramento.response.UsuarioResponse;
+import com.example.monitoramento.services.ApiClient;
 import com.github.pires.obd.commands.control.DistanceMILOnCommand;
 import com.github.pires.obd.commands.control.DistanceSinceCCCommand;
 import com.github.pires.obd.commands.control.TroubleCodesCommand;
@@ -63,7 +67,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Calendar;
 import java.util.UUID;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.example.monitoramento.R.drawable.btn_fundo_vermelho_alerta;
 
@@ -78,9 +87,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public double nivel_inicial;
     public boolean nivel_inicial_coletado = false;
     public boolean distancia_inicial_coletada = false;
+    public boolean velocidade_inicial_coletada = false;
+    public boolean temperatura_inicial_coletada = false;
     public int distancia_inicial = 0;
     public double notaConducao = 10.0;
     public int dist_sem_punicao = 0;
+    public ResumoModelo resumo = new ResumoModelo();
+
 
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     BluetoothDevice device = null;
@@ -263,6 +276,43 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+    @Override
+    public void onBackPressed()
+    {
+        resumo.setDataTermino(Calendar.getInstance().getTime());
+        resumo.setCodigoUsuario(Integer.parseInt(codigoUsuario()));
+        salvarResumo(resumo);
+    }
+
+    private String codigoUsuario(){
+
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.CodUsuario), Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(getString(R.string.CodUsuario), Context.MODE_PRIVATE);
+        String result = sharedPreferences.getString(getString(R.string.CodUsuario), "");
+        return result;
+    }
+    public void salvarResumo(ResumoModelo resumoModelo){
+
+        Call<ResumoModelo> resumoModeloCall = ApiClient.getResumoService().salvarResumo(resumoModelo);
+        resumoModeloCall.enqueue(new Callback<ResumoModelo>() {
+            @Override
+            public void onResponse(Call<ResumoModelo> call, Response<ResumoModelo> response) {
+                if(response.code() == 200)
+                    if(response.isSuccessful()){
+                        //salvarDadosLocal(response.body());
+                        Intent intent = new Intent(getApplicationContext(), Veiculo.class);
+                        startActivity(intent);
+                    }else{
+                        Toast.makeText(MainActivity.this,"Não foi cadastrado o usuario", Toast.LENGTH_LONG).show();
+                    }
+            }
+
+            @Override
+            public void onFailure(Call<ResumoModelo> call, Throwable t) {
+                Toast.makeText(MainActivity.this,"Não foi cadastrado o usuario", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -341,7 +391,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Button distancia;
         Button nota;
         Button aceleracao;
-        public ResumoModelo resumo = new ResumoModelo();
 
         public ConnectThread(BluetoothSocket socket1) {
             // Use a temporary object that is later assigned to mmSocket
@@ -400,16 +449,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     speedCommand.run(mmInStream, mmOutStream);
                     coolantTemperature.run(mmInStream, mmOutStream);
                     throttlePosition.run(mmInStream, mmOutStream);
-                    fuelLevel  = new FuelLevelCommand();
+                    fuelLevel = new FuelLevelCommand();
                     fuelLevel.run(mmInStream, mmOutStream);
                     milOnCommand.run(mmInStream, mmOutStream);
                     distanceSinceCCCommand.run(mmInStream, mmOutStream);
                     troubleCodesCommand.run(mmInStream, mmOutStream);
 
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                }catch (Exception e){
                     e.printStackTrace();
                 }
 
@@ -424,9 +470,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 showRpm(engineRpmCommand.getFormattedResult(), engineRpmCommand.getRPM(), distanceSinceCCCommand.getKm());
 
-                showVel(speedCommand.getFormattedResult());
+                showVel(speedCommand.getFormattedResult(), speedCommand.getMetricSpeed());
 
-                showTemp(coolantTemperature.getFormattedResult());
+                showTemp(coolantTemperature.getFormattedResult() , coolantTemperature.getTemperature());
 
                 showConsum(fuelLevel.getFuelLevel());
 
@@ -478,9 +524,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         }
-        public void showVel(final String velAmostragem) {
+        public void showVel(final String velAmostragem, final int velValue) {
 
             try{
+                if(!velocidade_inicial_coletada){
+                    velocidade_inicial_coletada = true;
+                    resumo.setVelocidadeMaxima(velValue);
+                }
+                if(resumo.getVelocidadeMaxima() < velValue)
+                    resumo.setVelocidadeMaxima(velValue);
+
                 velocidade = (Button)findViewById(R.id.btn_Velocidade);
                 velocidade.post(new Runnable(){
                     @Override
@@ -495,21 +548,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         public void showRpm(final String rpmAmostragem, final int rpmPuro, final int dist) {
+            try{
+                rpm = (Button)findViewById(R.id.btn_Rotacao);
+                rpm.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        rpm.setText(rpmAmostragem);
+                        if (rpmPuro >= 3000) {
+                            rpm.setBackgroundResource(btn_fundo_vermelho_alerta);
+                            decrementaNota(dist);
+                        }else {
+                            rpm.setBackgroundResource(R.drawable.btn_info_adicional);
+                        }
 
-            rpm = (Button)findViewById(R.id.btn_Rotacao);
-            rpm.post(new Runnable(){
-                @Override
-                public void run() {
-                    rpm.setText(rpmAmostragem);
-                    if (rpmPuro >= 3000) {
-                        rpm.setBackgroundResource(btn_fundo_vermelho_alerta);
-                        decrementaNota(dist);
-                    }else {
-                        rpm.setBackgroundResource(R.drawable.btn_info_adicional);
                     }
+                });
+            }catch (Exception e){
+                Toast.makeText(getApplicationContext(), "Erro ao verificar RPM" , Toast.LENGTH_LONG).show();
+            }
 
-                }
-            });
 
         }
 
@@ -519,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 try{
                     nota = (Button)findViewById(R.id.btn_nota);
                     notaConducao -= 0.5;
-                    resumo.notaConducao = notaConducao;
+                    resumo.setNotaConducao(notaConducao);
 
                     nota.post(new Runnable(){
                         @Override
@@ -546,9 +603,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if(notaConducao < 10){
                 try{
                     nota = (Button)findViewById(R.id.btn_nota);
-
                     notaConducao += 0.5;
-                    resumo.notaConducao = notaConducao;
+                    resumo.setNotaConducao(notaConducao);
                     nota.post(new Runnable(){
                         @Override
                         public void run() {
@@ -570,8 +626,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
 
-        public void showTemp(final String temp) {
+        public void showTemp(final String temp, final float tempValue) {
             try {
+                if(!temperatura_inicial_coletada){
+                    temperatura_inicial_coletada = true;
+                    resumo.setTemperaturaMaxima(tempValue);
+                }
+                if(resumo.getTemperaturaMaxima() < tempValue)
+                    resumo.setTemperaturaMaxima(tempValue);
+
                 temperatura = (Button)findViewById(R.id.btn_temperatura);
                 temperatura.post(new Runnable(){
                     @Override
@@ -599,7 +662,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if((dist - dist_sem_punicao) >= 2 ){
                     incrementaNota(dist);
                 }
-                resumo.distancia = res;
+                resumo.setDistancia(res);
                 distancia = (Button)findViewById(R.id.btn_distancia);
                 distancia.post(new Runnable(){
                     @Override
@@ -620,7 +683,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     nivel_inicial = nivel;
                     nivel_inicial_coletado = true;
                 }
-                resumo.nivelTanque = nivel_inicial - nivel;
+                if(nivel_inicial < nivel * 1.05)
+                    nivel_inicial = nivel;
+
+                resumo.setConsumoMedio(nivel_inicial - nivel);
+                resumo.setNivelTanque(nivel);
+
                 consumoMed = (Button)findViewById(R.id.btn_Consumo_med);
                 consumoMed.post(new Runnable(){
                     @Override

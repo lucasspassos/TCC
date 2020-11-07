@@ -78,7 +78,7 @@ public class Cadastro extends AppCompatActivity {
                             try {
                                 UsuarioModelo usuarioModelo = new UsuarioModelo();
                                 usuarioModelo.setNome(nome);
-                                usuarioModelo.setEmail(usuario);
+                                usuarioModelo.setEmail(usuario.toLowerCase());
                                 usuarioModelo.setSenha(senha);
                                 salvarUsuario(usuarioModelo);
 
@@ -112,13 +112,13 @@ public class Cadastro extends AppCompatActivity {
             @Override
             public void onResponse(Call<UsuarioResponse> call, Response<UsuarioResponse> response) {
                 if(response.code() == 200)
-                if(response.isSuccessful()){
-                    salvarDadosLocal(response.body());
-                    Intent intent = new Intent(getApplicationContext(), Veiculo.class);
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(Cadastro.this,"Não foi cadastrado o usuario", Toast.LENGTH_LONG).show();
-                }
+                    if(response.isSuccessful()){
+                        salvarDadosLocal(response.body());
+                        Intent intent = new Intent(getApplicationContext(), Veiculo.class);
+                        startActivity(intent);
+                    }else{
+                        Toast.makeText(Cadastro.this,"Não foi cadastrado o usuario", Toast.LENGTH_LONG).show();
+                    }
             }
 
             @Override
