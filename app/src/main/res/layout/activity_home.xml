@@ -15,9 +15,8 @@
         android:layout_marginStart="51dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="51dp"
-        android:layout_marginBottom="180dp"
         android:src="@drawable/car"
-        app:layout_constraintBottom_toTopOf="@+id/txt_distancia_prox_abastecimento"
+        app:layout_constraintBottom_toTopOf="@+id/txt_resum_viagem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,6 +37,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
+
     <TextView
         android:id="@+id/txt_resum_viagem"
         android:layout_width="wrap_content"
@@ -48,152 +48,188 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.479" />
+
 
     <TextView
-        android:id="@+id/txt_info_adicional"
+        android:id="@+id/txt_data_termino"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="170dp"
-        android:text="Informações atuais"
+        android:layout_marginStart="228dp"
+        android:text="Fim da Viagem"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.435" />
+
+    <TextView
+        android:id="@+id/txt_data_inicio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="88dp"
+        android:text="Inicio da Viagem"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.436" />
+
+    <Button
+        android:id="@+id/btn_data_inicio"
+        style="@style/AppTheme"
+        android:layout_width="95dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="85dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/btn_resumo_viagem"
+        android:text="07/11/2020 11:20:00"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_data_inicio" />
+
+    <Button
+        android:id="@+id/btn_data_termino"
+        style="@style/AppTheme"
+        android:layout_width="95dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="228dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/btn_resumo_viagem"
+        android:text="07/11/2020 11:20:00"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_data_termino" />
+
+    <Button
+        android:id="@+id/btn_distancia"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/btn_resumo_viagem"
+        android:text="35 km"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/btn_nt_conducao"
+        app:layout_constraintTop_toBottomOf="@+id/txt_distancia" />
 
     <TextView
         android:id="@+id/txt_cons_medio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="55dp"
         android:text="Consumo médio"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_nt_conducao"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginBottom="50dp"
-        android:text="Nota de condução"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_distancia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:text="Distância"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.912"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.557" />
 
     <Button
         android:id="@+id/btn_consumo_medio"
         style="@style/AppTheme"
-        android:layout_width="95dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/btn_resumo_viagem"
-        android:text="10 km/l"
+        android:text="25%"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_cons_medio" />
 
     <Button
         android:id="@+id/btn_nt_conducao"
-        android:layout_width="95dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/btn_resumo_viagem"
         android:text="8,5"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@+id/btn_consumo_medio"
         app:layout_constraintTop_toBottomOf="@+id/txt_nt_conducao" />
 
-    <Button
-        android:id="@+id/btn_distancia"
-        android:layout_width="95dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/btn_resumo_viagem"
-        android:text="35 km"
+    <TextView
+        android:id="@+id/txt_nt_conducao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="164dp"
+        android:layout_marginBottom="50dp"
+        android:text="Nota de condução"
         android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.553" />
+
+    <TextView
+        android:id="@+id/txt_distancia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="50dp"
+        android:text="Distância"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_nt_conducao"
-        app:layout_constraintTop_toBottomOf="@+id/txt_distancia" />
+        app:layout_constraintHorizontal_bias="0.859"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.553" />
 
     <TextView
         android:id="@+id/txt_distancia_prox_abastecimento"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="28dp"
         android:layout_marginBottom="250dp"
         android:text="Nível do Tanque"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgVeiculo" />
+        app:layout_constraintTop_toBottomOf="@+id/imgVeiculo"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/btn_nivel_tanque"
+        style="@style/AppTheme"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/btn_resumo_viagem"
+        android:text="50%"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
 
     <TextView
         android:id="@+id/txt_avarias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="185dp"
+        android:layout_marginStart="190dp"
         android:layout_marginBottom="250dp"
         android:text="Avarias"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_prox_revisao"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="290dp"
-        android:layout_marginBottom="250dp"
-        android:text="Próxima revisão"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btn_distancia_abastecimento"
-        android:layout_width="58dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/btn_info_adicional"
-        android:text="35%"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_distancia_prox_abastecimento" />
 
     <Button
         android:id="@+id/btn_avarias"
-        android:layout_width="58dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="175dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="162dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/btn_info_adicional_avarias"
         android:text="0"
         android:textAlignment="center"
@@ -201,18 +237,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_avarias" />
 
+    <TextView
+        android:id="@+id/txt_velocidade_maxima"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="292dp"
+        android:layout_marginBottom="248dp"
+        android:text="Velocidade Máxima"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <Button
-        android:id="@+id/btn_avarias2"
-        android:layout_width="58dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="300dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/btn_info_adicional"
-        android:text="1520 km"
+        android:id="@+id/btn_velocidade_maxima"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="295dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/btn_resumo_viagem"
+        android:text="110 km/h"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_prox_revisao" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_velocidade_maxima" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

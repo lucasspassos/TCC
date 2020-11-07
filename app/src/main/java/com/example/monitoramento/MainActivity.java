@@ -67,7 +67,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 import retrofit2.Call;
@@ -279,7 +281,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onBackPressed()
     {
-        resumo.setDataTermino(Calendar.getInstance().getTime());
+        String data = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+        resumo.setDataTermino(data.replace(' ', 'T'));
         resumo.setCodigoUsuario(Integer.parseInt(codigoUsuario()));
         salvarResumo(resumo);
     }
@@ -297,14 +300,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         resumoModeloCall.enqueue(new Callback<ResumoModelo>() {
             @Override
             public void onResponse(Call<ResumoModelo> call, Response<ResumoModelo> response) {
-                if(response.code() == 200)
+                if(response.code() == 200){
                     if(response.isSuccessful()){
-                        //salvarDadosLocal(response.body());
-                        Intent intent = new Intent(getApplicationContext(), Veiculo.class);
+                        Intent intent = new Intent(getApplicationContext(), Home.class);
                         startActivity(intent);
                     }else{
                         Toast.makeText(MainActivity.this,"Não foi cadastrado o usuario", Toast.LENGTH_LONG).show();
                     }
+                }else{
+                    Toast.makeText(MainActivity.this,"Não foi cadastrado o usuario", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override

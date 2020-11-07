@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.example.monitoramento.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
 
@@ -18,8 +19,8 @@ public class ResumoModelo {
     private double temperaturaMaxima;
     private double velocidadeMaxima;
     private int avarias;
-    private Date dataInicio;
-    private Date dataTermino;
+    private String dataInicio;
+    private String dataTermino;
 
     public int getAvarias() {
         return avarias;
@@ -85,24 +86,25 @@ public class ResumoModelo {
         this.velocidadeMaxima = velocidadeMaxima;
     }
 
-    public Date getDataInicio() {
+    public String getDataInicio() {
         return dataInicio;
     }
 
-    public void setDataInicio(Date dataInicio) {
+    public void setDataInicio(String dataInicio) {
         this.dataInicio = dataInicio;
     }
 
-    public Date getDataTermino() {
+    public String getDataTermino() {
         return dataTermino;
     }
 
-    public void setDataTermino(Date dataTermino) {
+    public void setDataTermino(String dataTermino) {
         this.dataTermino = dataTermino;
     }
 
     public ResumoModelo (){
-        this.dataInicio = Calendar.getInstance().getTime();
+        this.dataInicio = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()));
+        this.dataInicio = this.dataInicio.replace(' ', 'T');
     }
 
 
